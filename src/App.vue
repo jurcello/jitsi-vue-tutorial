@@ -5,60 +5,18 @@
 </template>
 
 <script>
-import JitsiMeetJS from '@lyno/lib-jitsi-meet';
-import $ from 'jquery';
-import options from './options/config';
-
-window.$ = $;
-
-JitsiMeetJS.init();
-JitsiMeetJS.setLogLevel(JitsiMeetJS.logLevels.INFO);
-
-const connection = new JitsiMeetJS.JitsiConnection(null, null, options);
-
-function onConnectionSuccess() {
-  console.log("onConnectionSuccess", arguments);
-  const room = connection.initJitsiConference("my-secret-conference", {});
-  room.on(JitsiMeetJS.events.conference.TRACK_ADDED, onRemoteTrack);
-  room.on(JitsiMeetJS.events.conference.CONFERENCE_JOINED, () => {
-    console.log("onConferenceJoined", arguments);
-    JitsiMeetJS.createLocalTracks({
-      devices: ['video', 'audio']
-    }).then((tracks) => {
-      console.log("onLocalTracks", tracks);
-      tracks.forEach(track => {
-        room.addTrack(track);
-      })
-    }).catch(error => {
-          console.error("There was an error creating the local tracks:", error);
-        }
-    );
-  });
-  room.join();
-}
-
-function onConnectionFailed() {
-  console.log("onConnectionFailed", arguments);
-}
-
-function disconnect() {
-  console.log("disconnect", arguments);
-}
-
-connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED, onConnectionSuccess);
-connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_FAILED, onConnectionFailed);
-connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_DISCONNECTED, disconnect);
-
-connection.connect();
-
-
-function onRemoteTrack() {
-  console.log("onRemoteTrack", arguments);
-}
-
+import { connect, createAndJoinRoom, createTracksAndAddToRoom } from './utils/jitsiUtils';
 
 export default {
   name: 'App',
+
+  mounted() {
+    connect().then(connection => {
+      return createAndJoinRoom(connection, 'my-secret-conference');
+    })
+    .then(room => createTracksAndAddToRoom(room))
+    .catch(error => console.error(error));
+  }
 }
 </script>
 
