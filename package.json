@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@lyno/lib-jitsi-meet": "^1.4627.6",
+    "@lyno/lib-jitsi-meet": "^1.5142.0",
     "core-js": "^3.6.5",
     "jquery": "^3.5.1",
     "vue": "^2.6.11"

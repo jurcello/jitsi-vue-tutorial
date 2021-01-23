@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <h1>Performance</h1>
+    <button @click="connect">Connect</button>
     <video v-for="track in videoTracks" :key="`track-${track.getId()}`" :ref="track.getId()" autoplay />
     <audio v-for="track in audioTracks" :key="`track-${track.getId()}`" :ref="track.getId()" autoplay />
   </div>
@@ -30,19 +31,20 @@ export default {
       this.$nextTick().then(() => {
         track.attach(this.$refs[track.getId()][0]);
       })
+    },
+
+    connect() {
+      const roomName = 'my-secret-conference';
+      connect(roomName).then(connection => {
+        return createAndJoinRoom(connection, roomName);
+      })
+      .then(room => {
+        room.on(JitsiMeetJS.events.conference.TRACK_ADDED, track => this.addTrack(track));
+        createTracksAndAddToRoom(room);
+      })
+      .catch(error => console.error(error));
     }
   },
-
-  mounted() {
-    connect().then(connection => {
-      return createAndJoinRoom(connection, 'my-secret-conference');
-    })
-    .then(room => {
-      room.on(JitsiMeetJS.events.conference.TRACK_ADDED, track => this.addTrack(track));
-      createTracksAndAddToRoom(room);
-    })
-    .catch(error => console.error(error));
-  }
 }
 </script>
 

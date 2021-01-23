@@ -30,9 +30,12 @@ export function createAndJoinRoom(connection, roomName) {
   });
 }
 
-export function connect() {
+export function connect(roomName) {
   return new Promise(((resolve, reject) => {
-    const connection = new JitsiMeetJS.JitsiConnection(null, null, options);
+    let optionsWithRoom = { ...options };
+    optionsWithRoom.serviceUrl = options.serviceUrl + `?room=${roomName}`;
+
+    const connection = new JitsiMeetJS.JitsiConnection(null, null, optionsWithRoom);
 
     connection.addEventListener(JitsiMeetJS.events.connection.CONNECTION_ESTABLISHED, () => {
       resolve(connection);

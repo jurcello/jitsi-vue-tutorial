@@ -44,7 +44,6 @@ export default {
     },
     useStunTurn: true, // use XEP-0215 to fetch TURN servers for the JVB connection
     useTurnUdp: false,
-    bosh: 'https://meet.jit.si/http-bind', // FIXME: use xep-0156 for that
     websocket: 'wss://meet.jit.si/xmpp-websocket', // FIXME: use xep-0156 for that
 
 
